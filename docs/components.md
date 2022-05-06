@@ -6,15 +6,12 @@ Classes with the `utility` tag are add-ons to the `base` classes, i.e: adds anim
 Content Table
 - [Components](#components)
   - [Button](#button)
-  - [Input](#input)
-    - [Input Component Context](#input-component-context)
-  - [Icon](#icon)
     - [Available Icon Templates](#available-icon-templates)
     - [Preview of the icons (in the same order as the table above)](#preview-of-the-icons-in-the-same-order-as-the-table-above)
   - [Tech Tag](#tech-tag)
     - [Available variants of Tech Tag](#available-variants-of-tech-tag)
-    - [Preview](#preview-of-tech-tag)
-  - [Marker](#marker) 
+  - [Marker](#marker)
+  - [Input](#input)
 
 
 ## Button
@@ -40,53 +37,8 @@ This allow much more flexibility when trying to style a button.\
 | `button-lg` | A slightly bigger version of the base class. | `base` |
 | `button-xl` | Largest version of a button. | `base` |
 | `button-transition` | This is a utility class that adds animation to a button. | `utility` |
-
-## Input
-
-```python
-# views.py
-
-def some_view(request):
-  # some code
-  context = {
-    "input": {
-      "attributes": {
-        "name": "username",
-        "type": "text",
-        "required": "true",
-        "placeholder": "Enter Username"
-      },
-      "label": "Username:"
-      # here we can decide its look after some input validation
-      "state": "valid" if data_is_valid else "invalid" if data_is_invalid else None
-    }
-  }
-  # some more code
-  return render(request, template, context)
+ render(request, template, context)
 ```
-
-```html
-<!-- html file where the input component is neede. -->
-<!-- Should just be included with some context -->
-{% include 'components/input.html' with input_context=input %}
-
-<!-- 
-  If there is only one input in the entire html, then having
-  a key "input_context" in the main context is good enough.
-  Get rid of the need to pass a specific context for the input.
--->
-{% include 'components/input.html' %}
-```
-
-### Input Component Context
-
-| Key | Value | Description |
-| :-- | :---- | :---------- |
-| `attributes` | `dictionary` | This should be a dictionary with the keys being an attribute of an input tag and its value being the correct value the attribute needs.|
-| `label` | `string` | This is the label text that is above the input box. |
-| `state` | `"valid"`, `"invalid"`, `None` | This decides the look of the input box. `valid` for a green look, and `invalid` for a red look. If neither look is desired then do not defined this in the context.|
-
-The input component is built to be able to handle simple validation that the element tag originally supports. Since the `invalid` style uses the pseudo-selector `:invalid`.
 
 ## Icon
 ```html
@@ -144,10 +96,6 @@ It is also possible to use a `<div>` tag to do the job.
 | `tech-tag-green` | Pre-defined `green-400` color theme with hover effect. | `utility` |
 A list of all the colors is available [here](https://tailwindcss.com/docs/customizing-colors).
 
-### Preview of Tech Tag
-
-![Preview](https://user-images.githubusercontent.com/46619361/164512195-fc435539-db22-4067-9612-0568ebf33899.gif)
-
 ## Marker
 ```html
 {% include 'components/marker.html' with marker_name="HTML" marker_color="bg-red-700" %}
@@ -161,48 +109,30 @@ Valid color classes include [tailwind official colors](https://tailwindcss.com/d
 | `marker_color` | The color of the circel. |
 
 ## Input
-
-```python
-# views.py
-
-def some_view(request):
-  # some code
-  context = {
-    "input": {
-      "attributes": {
-        "name": "username",
-        "type": "text",
-        "required": "true",
-        "placeholder": "Enter Username"
-      },
-      "label": "Username:"
-      # here we can decide its look after some input validation
-      "state": "valid" if data_is_valid else "invalid" if data_is_invalid else None
-    }
-  }
-  # some more code
-  return render(request, template, context)
-```
-
+Please use the template below as a guide to make an input witht the same style in figma.
 ```html
-<!-- html file where the input component is neede. -->
-<!-- Should just be included with some context -->
-{% include 'components/input.html' with input_context=input %}
-
-<!-- 
-  If there is only one input in the entire html, then having
-  a key "input_context" in the main context is good enough.
-  Get rid of the need to pass a specific context for the input.
--->
-{% include 'components/input.html' %}
+<div
+  class="relative w-fit p-4 mt-4 mb-2 mx-2"
+>
+  <input 
+  {% for k, v in attributes.items %}
+    {{ k }}="{{ v }}"
+  {% endfor %}
+  class="peer p-2 bg-transparent outline-none 
+  border-white rounded-xl border-solid border-2 
+  transition-colors duration-150
+  focus-visible:placeholder:text-gray-500
+  focus-visible:border-active 
+  text-white w-full placeholder:text-white 
+  required:not-focus-visible:border-white
+  required:not-focus-visible:invalid:border-error
+  valid:focus-visible:border-success" 
+  />
+  <label 
+    for="{{ attributes.name }}" 
+    class="absolute left-5 -top-[15%] text-white"
+  >
+    {{ label }}
+  </label>
+</div>
 ```
-
-### Input Component Context Tale
-
-| Key | Value | Description |
-| :-- | :---- | :---------- |
-| `attributes` | `dictionary` | This should be a dictionary with the keys being an attribute of an input tag and its value being the correct value the attribute needs.|
-| `label` | `string` | This is the label text that is above the input box. |
-| `state` | `"valid"`, `"invalid"`, `None` | This decides the look of the input box. `valid` for a green look, and `invalid` for a red look. If neither look is desired then do not defined this in the context.|
-
-The input component is built to be able to handle simple validation that the element tag originally supports. Since the `invalid` style uses the pseudo-selector `:invalid`.
