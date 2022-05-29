@@ -56,4 +56,10 @@
       });
   }
 
+  const experiences = result_list.find('a[data-exp-id]');
+  experiences.click(function (e) {
+    e.preventDefault();
+    exp_getter(result_list.find(this).attr('data-exp-id'), 'experience-display-modal');
+  })
+
 })();

@@ -503,7 +503,7 @@ class SearchQueries:
             Q(first_name__startswith=first_name) | 
             Q(last_name__startswith=last_name)
         ).annotate(weight=Value(0, IntegerField())) \
-            .values("user__username", "first_name", "last_name", "image", "bio")
+            .values("user__username", "first_name", "last_name", "image", "bio", "id")
 
         # todo: able to search for possible users that contain query string.
         # best_matches_ids = best_matches.values_list("id", flat=True)
@@ -528,7 +528,8 @@ class SearchQueries:
                 "bio": user["bio"],
                 "username": user['user__username'],
                 "category": "user",
-                "url": "",
+                "url": "/profile/" + user['user__username'],
+                "id": user['id']
             })
 
         return result
@@ -538,7 +539,7 @@ class SearchQueries:
 
         result = []
 
-        best_matches = Skill.objects.filter(name__startswith=query_string) \
+        best_matches = Skill.objects.filter(name__istartswith=query_string) \
             .exclude(name="User")
 
         best_matches_ids = best_matches.values_list("id", flat=True)
@@ -563,6 +564,7 @@ class SearchQueries:
                 "image": skill["icon_HREF"],
                 "category": "skill" if skill["node_type"] != "C" else "skill category",
                 "url": "/experience-list-skill?name=" + skill["id"],
+                "id": skill['id']
             })
 
         for skill in potential_skills:
@@ -570,7 +572,8 @@ class SearchQueries:
                 "text": skill["name"],
                 "image": skill["icon_HREF"],
                 "category": "skill" if skill["node_type"] != "C" else "skill category",
-                "url": "",
+                "url": "/experience-list-skill?name=" + skill["id"],
+                "id": skill['id']
             })
 
         return result
@@ -637,6 +640,7 @@ class SearchQueries:
                 "start_date": exp["start_date"].strftime("%d %B, %Y") if exp['start_date'] is not None else None,
                 "end_date": exp["end_date"].strftime("%d %B, %Y") if exp['end_date'] is not None else None,
                 "category": "experience",
+                "id": exp['id']
             })
 
         # append the potential searches
@@ -664,6 +668,7 @@ class SearchQueries:
                 "start_date": exp["start_date"].strftime("%d %B, %Y") if exp['start_date'] is not None else None,
                 "end_date": exp["end_date"].strftime("%d %B, %Y") if exp['end_date'] is not None else None,
                 "category": "experience",
+                "id": exp['id']
             })
 
         return result
